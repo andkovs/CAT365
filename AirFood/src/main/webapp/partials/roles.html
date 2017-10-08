@@ -1,0 +1,19 @@
+<h3 ng-bind="title"></h3>
+<hr/>
+
+<form class="form-inline" name="roleForm" ng-repeat="r in roles track by $index" ng-submit="saveRole(r, roleForm)"
+      novalidate>
+
+    <p>{{r.rolename}}</p>
+
+    <!--<button class="btn btn-success" type="submit" ng-show="(role.indexOf('admin')!=-1 || role.indexOf('dispatcher')!=-1)&&(roleForm.roleName.$dirty)" ng-disabled="roleForm.roleName.$error.required"><i class="glyphicon glyphicon-ok"></i></button>-->
+    <!--<button class="btn btn-danger" type="button" ng-show="(role.indexOf('admin')!=-1 || role.indexOf('dispatcher')!=-1)&&(roleForm.roleName.$dirty)" ng-click="resetRole(r, roleForm)"><i class="glyphicon glyphicon-remove"></i></button>-->
+    <!--<button class="btn btn-warning" type="button" ng-show="(role.indexOf('admin')!=-1 || role.indexOf('dispatcher')!=-1)&&(!roleForm.roleName.$dirty)" ng-click="removeRole(r)"><i class="glyphicon glyphicon-trash"></i></button>-->
+    <!--<hr/>-->
+</form>
+<!--<form class="form-inline" ng-show="role.indexOf('admin')!=-1" name="newRoleForm" ng-submit="addRole(newRole)" novalidate>-->
+<!--<div class="form-group">-->
+<!--<input class="form-control" type="text" name="roleName" ng-model="newRole.rolename" required/>-->
+<!--</div>-->
+<!--<button class="btn btn-success" type="submit" ng-disabled="newRoleForm.roleName.$error.required"><i class="glyphicon glyphicon-plus"></i></button>-->
+<!--</form>-->

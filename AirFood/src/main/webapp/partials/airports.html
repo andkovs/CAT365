@@ -1,0 +1,50 @@
+<h3 ng-bind="title"></h3>
+<hr/>
+
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" novalidate name="airportForm"
+      ng-repeat="a in airports" ng-submit="saveAirport(a, airportForm)">
+    <div class="row">
+        <div class="form-group col-xs-6">
+            <input required ng-maxlength="25" class="form-control" type="text" name="airportName" ng-model="a.name"/>
+            <span ng-show="airportForm.airportName.$error.maxlength" class="text-warning">Не более 25 символов</span>
+        </div>
+        <div class="form-group col-xs-6">
+            <button class="btn btn-success" type="submit" ng-show="airportForm.airportName.$dirty"
+                    ng-disabled="airportForm.$invalid"><i class="glyphicon glyphicon-ok"></i></button>
+            <button class="btn btn-danger" type="button" ng-show="airportForm.airportName.$dirty"
+                    ng-click="resetAirport(a, airportForm)"><i class="glyphicon glyphicon-remove"></i></button>
+            <button class="btn btn-warning" type="button" ng-show="!airportForm.airportName.$dirty"
+                    ng-click="removeAirport(a)"><i class="glyphicon glyphicon-trash"></i></button>
+        </div>
+    </div>
+    <hr/>
+</form>
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" novalidate name="newAirportForm"
+      ng-submit="addAirport(newAirport)">
+    <div class="row">
+        <div class="form-group col-xs-6">
+            <input required ng-maxlength="52" class="form-control" type="text" name="airportName"
+                   ng-model="newAirport.name"/>
+            <span ng-show="airportForm.airportName.$error.maxlength" class="text-warning">Не более 25 символов</span>
+        </div>
+        <div class="form-group col-xs-6">
+            <button class="btn btn-success" type="submit" ng-disabled="newAirportForm.$invalid"><i
+                    class="glyphicon glyphicon-plus"></i></button>
+        </div>
+    </div>
+</form>
+
+<form ng-show="roles.indexOf('agent')!=-1 || roles.indexOf('review')!=-1 || roles.indexOf('management')!=-1">
+    <table class="table table-hover table-striped">
+        <tr>
+            <th>Наименование</th>
+        </tr>
+        <tr ng-repeat="a in airports">
+            <td>
+                <p>{{a.name}}</p>
+            </td>
+        <tr ng-if="airports.length==0">
+            <td colspan="3">Здесь еще нет аэропортов</td>
+        </tr>
+    </table>
+</form>

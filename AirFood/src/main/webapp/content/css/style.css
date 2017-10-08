@@ -1,0 +1,29 @@
+body {
+  overflow-y: scroll; }
+
+.loader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  background: rgba(255, 255, 255, 0.75);
+  opacity: 1;
+  transition: opacity .3s linear 0s, bottom 0s linear .3s; }
+  .loader.active {
+    bottom: 0;
+    opacity: 1;
+    transition: opacity .3s linear 0s, bottom 0s linear 0s; }
+
+.btn-file {
+  position: relative;
+  overflow: hidden; }
+  .btn-file input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer; }
+

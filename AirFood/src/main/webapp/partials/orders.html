@@ -1,0 +1,288 @@
+<h3 ng-bind="title"></h3>
+<hr />
+
+<div class="row">
+
+  <div class="form-group col-md-3 col-sm-12">
+      <select class="form-control" name="airportSelect"
+              ng-options="item.id as item.name for item in airports" ng-model="currentAirport">
+      </select>
+
+
+    <!--<div class="btn-group" role="group" aria-label="...">-->
+      <!--<button type="button" class="btn btn-default"-->
+              <!--ng-click="setCurrentAirport(0)"-->
+              <!--ng-class="{'btn-primary': currentAirport == 0}">All</button>-->
+      <!--<button type="button" class="btn btn-default"-->
+              <!--ng-repeat="a in airports"-->
+              <!--ng-bind="a.name"-->
+              <!--ng-click="setCurrentAirport(a.id)"-->
+              <!--ng-class="{'btn-primary': currentAirport == a.id}"></button>-->
+    <!--</div>-->
+  </div>
+
+  <!-- Date from -->
+  <div class="col-md-4 col-sm-5 col-xs-5">
+    <div class="form-group">
+      <div id="dateTimeFrom" class="input-group">
+        <input type="text" class="form-control" ng-model="from" />
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar" href=""></span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date to -->
+  <div class="col-md-4 col-sm-5 col-xs-5">
+    <div class="form-group">
+      <div id="dateTimeTo" class="input-group">
+        <input type="text" class="form-control" ng-model="to" />
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar" href=""></span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group col-md-1 col-sm-2 col-xs-2">
+    <button class="btn btn-primary glyphicon glyphicon-search" type="button" ng-click="getOrders()" style="width: 100%;"></button>
+  </div>
+
+</div>
+
+<p class="clearfix" >
+    <a ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" class="btn btn-info pull-left" ui-sref="ordersDetails({ id: 0})">Новый заказ</a>
+    <a class="btn btn-success pull-right" ng-click="getOrdersListExcel(from, to, currentAirport)" ng-show="orders.length"><i class="glyphicon glyphicon-download"></i> Excel</a>
+</p>
+
+<table class="table table-hover">
+  <tr>
+    <th>Dep.</th>
+    <th>Arr.</th>
+    <th>Время прилета</th>
+    <th>Время вылета</th>
+    <th>Время досмотра</th>
+    <th>Под бортом</th>
+    <th>Рейс</th>
+    <th>Тип ВС</th>
+    <th>Бортовой №</th>
+    <th>Изменено</th>
+    <th></th>
+    <th ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1"></th>
+    <th ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1"></th>
+  </tr>
+  <tr ng-repeat="o in orders | ordersFilter: currentAirport">
+    <td ng-bind="o.depAirportName"></td>
+    <td ng-bind="o.arrAirportName"></td>
+    <td ng-bind="o.arriveDateTime"></td>
+    <td ng-bind="o.departureDateTime"></td>
+    <td ng-bind="o.inspectionDateTime"></td>
+    <td ng-bind="o.workDateTime"></td>
+    <td ng-bind="o.flightNumberDirect"></td>
+    <td ng-bind="o.aircraftType"></td>
+    <td ng-bind="o.boardNumber"></td>
+    <td ng-bind="changeTime(o.changeDateTime)"></td>
+    <td><a href="" ng-click="preview(o.id)" class="text-info glyphicon glyphicon-eye-open"></a></td>
+    <td ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1"><a ui-sref="ordersDetails({ id: o.id})" class="text-success glyphicon glyphicon-edit"></a></td>
+    <td ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1"><a href="" ng-click="removeOrder(o)" class="text-danger glyphicon glyphicon-remove"></a></td>
+  </tr>
+</table>
+
+<div id="orderPreview" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Заказ #{{previewData.id}}</h4>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Common -->
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Аэропорт вылета</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.depAirportName}}</p></div>
+          <div class="col-xs-2 text-right"><p><b>Время прилета</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.arriveDateTime}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Аэропорт прилета</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.arrAirportName}}</p></div>
+          <div class="col-xs-2 text-right"><p><b>Время вылета</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.departureDateTime}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Номер рейса пр.</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.flightNameDirect}}</p></div>
+          <div class="col-xs-2 text-right"><p><b>Время готовности</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.readyDateTime}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Номер рейса обр.</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.flightNameReverse}}</p></div>
+          <div class="col-xs-2 text-right"><p><b>Время досмотра</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.inspectionDateTime}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Бортовой номер</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.boardNumber}}</p></div>
+          <div class="col-xs-2 text-right"><p><b>Под бортом</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.workDateTime}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Тип ВС</b></p></div>
+          <div class="col-xs-4"><p>{{previewData.aircraftType}}</p></div>
+        </div>
+
+        <hr />
+
+        <!-- Direct -->
+        <h5>Прямой пролет</h5>
+        <div class="row">
+          <div class="col-xs-3">
+            <p class="text-center"><b>Бизнес</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationDirectBusinessList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-3">
+            <p class="text-center"><b>Эконом</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationDirectEconomList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-3">
+            <p class="text-center"><b>Экипаж</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationDirectCrewList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-3">
+            <p class="text-center"><b>Специальное</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationDirectSpecialList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Напитки по матрице</b></p></div>
+          <div class="col-xs-10"><p>{{previewData.drinkDirect}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Комментарий</b></p></div>
+          <div class="col-xs-10"><p>{{previewData.directComment}}</p></div>
+        </div>
+
+        <hr />
+
+        <!-- Reverse -->
+        <h5>Обратный пролет</h5>
+        <div class="row">
+          <div class="col-xs-3">
+            <p class="text-center"><b>Бизнес</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationReverseBusinessList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-3">
+            <p class="text-center"><b>Эконом</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationReverseEconomList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-3">
+            <p class="text-center"><b>Экипаж</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationReverseCrewList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-3">
+            <p class="text-center"><b>Специальное</b></p>
+            <ul class="list-group">
+              <li class="list-group-item" ng-repeat="b in previewData.rationReverseSpecialList track by $index">
+                <span class="badge">{{b.amount}}</span>
+                {{b.code}}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Напитки по матрице</b></p></div>
+          <div class="col-xs-10"><p>{{previewData.drinkReverse}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right"><p><b>Комментарий</b></p></div>
+          <div class="col-xs-10"><p>{{previewData.reverseComment}}</p></div>
+        </div>
+
+        <div></div>
+
+        <div ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1 || roles.indexOf('agent')!=-1 || roles.indexOf('management')!=-1" class="row">
+          <div class="form-group col-md-6" >
+            <table class="table table-hover">
+              <tr>
+                <th>Файлы "на рейс"</th>
+              </tr>
+              <tr ng-repeat="f in previewData.files">
+                <td><a href="" ng-click="getFile(f)">{{f.name}}</a></td>
+              </tr>
+            </table>
+          </div>
+          <div class="form-group col-md-6" >
+            <table class="table table-hover">
+              <tr>
+                <th>Файл "с рейса"</th>
+                <th></th>
+              </tr>
+              <tr ng-repeat="ff in previewData.filesFrom">
+                <td><a href="" ng-click="getFile(ff)">{{ff.name}}</a></td>
+                <td class="text-right"><a ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('agent')!=-1" href="" class="text-danger glyphicon glyphicon-remove" ng-click="removeFile(ff)"></a></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('agent')!=-1">
+          <p class="left"><b>Добавить файл "с рейса"</b></p>
+          <p>
+            <input type="file" id="fileUplFrom" name="file" file-model="myFile"/>
+          </p>
+          <p>
+            <button class="btn btn-success" ng-click="uploadFile()">Загрузить</button>
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+        <button type="button" ng-click="getOrderPreviewExcel(previewData.id)" class="btn btn-success"><i class="glyphicon glyphicon-download"></i> Excel</button>
+      </div>
+    </div>
+  </div>
+</div>

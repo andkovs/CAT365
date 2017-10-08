@@ -1,0 +1,9 @@
+
+<h1 class="text-center">{{title}}</h1>
+<hr/>
+<div class="row">
+  <div class="col-xs-4">
+    <div class="list-group"><a class="list-group-item" ui-sref="dictionary.airports" ng-class="{active: $state.includes('dictionary.airports')}">Аэропорты<span class="badge" ng-bind="dictionary.airports.length"></span></a><a class="list-group-item" ui-sref="dictionary.airlines" ng-class="{active: $state.includes('dictionary.airlines')}">Авиакомпании<span class="badge" ng-bind="dictionary.airlines.length"></span></a><a class="list-group-item" ui-sref="dictionary.boards" ng-class="{active: $state.includes('dictionary.boards')}">Бортовые номера<span class="badge" ng-bind="dictionary.boards.length"></span></a><a class="list-group-item" ui-sref="dictionary.flights" ng-class="{active: $state.includes('dictionary.flights')}">Номера рейсов<span class="badge" ng-bind="dictionary.flights.length"></span></a></div>
+  </div>
+  <div class="col-xs-8" ui-view=""></div>
+</div>

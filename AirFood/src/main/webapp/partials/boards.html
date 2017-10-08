@@ -1,0 +1,95 @@
+<h3 ng-bind="title"></h3>
+<hr/>
+
+<div class="row">
+    <div class="form-group col-xs-4">
+        <select class="form-control" name="airlineSelect"
+                ng-options="item.id as item.name for item in airlines" ng-model="currentAirline"></select>
+    </div>
+</div>
+<hr/>
+
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" novalidate name="boardForm"
+      ng-repeat="b in boards | airlinesFilter: currentAirline" ng-submit="saveBoard(b, boardForm)">
+    <div class="row">
+        <div class="form-group col-xs-3">
+            <label>Бортовой номер</label>
+            <input ng-maxlength="40" class="form-control" type="text" name="boardNumber" ng-model="b.number" required/>
+            <span ng-show="boardForm.boardNumber.$error.maxlength" class="text-warning">Не более 40 символов</span>
+        </div>
+        <div class="form-group col-xs-3">
+            <label>Тип ВС</label>
+            <input ng-maxlength="50" class="form-control" type="text" name="boardAircraft" ng-model="b.aircraft"
+                   required/>
+            <span ng-show="boardForm.boardAircraft.$error.maxlength" class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-3">
+            <label>Авиакомпания</label>
+            <select class="form-control" name="boardAirline"
+                    ng-options="item.id as item.name for item in dictionary.airlines" ng-model="b.airlineId"></select>
+        </div>
+        <div class="form-group col-xs-3">
+            <label style="display:block;">&nbsp;</label>
+            <button ng-disabled="boardForm.$invalid" class="btn btn-success" type="submit" ng-show="boardForm.$dirty"><i
+                    class="glyphicon glyphicon-ok"></i></button>
+            <button class="btn btn-danger" type="button" ng-show="boardForm.$dirty" ng-click="resetBoard(b, boardForm)">
+                <i class="glyphicon glyphicon-remove"></i></button>
+            <button class="btn btn-warning" type="button"
+                    ng-show="!boardForm.$dirty" ng-click="removeBoard(b)"><i class="glyphicon glyphicon-trash"></i>
+            </button>
+        </div>
+    </div>
+    <hr/>
+</form>
+
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" name="newBoardForm"
+      ng-submit="addBoard(newBoard)" novalidate>
+    <div class="row">
+        <div class="form-group col-xs-3">
+            <label>Бортовой номер</label>
+            <input ng-maxlength="40" class="form-control" type="text" name="newboardNumber" ng-model="newBoard.number"
+                   required/>
+            <span ng-show="newBoardForm.newboardNumber.$error.maxlength"
+                  class="text-warning">Не более 40 символов</span>
+        </div>
+        <div class="form-group col-xs-3">
+            <label>Тип ВС</label>
+            <input ng-maxlength="50" class="form-control" type="text" name="newboardAircraft"
+                   ng-model="newBoard.aircraft" required/>
+            <span ng-show="newBoardForm.newboardAircraft.$error.maxlength"
+                  class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-3">
+            <label>Авиакомпания</label>
+            <select required class="form-control" ng-options="item.id as item.name for item in dictionary.airlines"
+                    ng-model="newBoard.airlineId">
+                <option value="">
+                <option/>
+            </select>
+        </div>
+        <div class="form-group col-xs-3">
+            <label style="display:block;">&nbsp;</label>
+            <button class="btn btn-success" type="submit" ng-disabled="newBoardForm.$invalid"><i
+                    class="glyphicon glyphicon-plus"></i></button>
+        </div>
+    </div>
+</form>
+
+<form ng-show="roles.indexOf('agent')!=-1 || roles.indexOf('review')!=-1 || roles.indexOf('management')!=-1">
+    <table class="table table-hover table-striped">
+        <tr>
+            <th>Бортовой номер</th>
+            <th>Тип ВС</th>
+        </tr>
+        <tr ng-repeat="b in boards | airlinesFilter: currentAirline">
+            <td>
+                <p>{{b.number}}</p>
+            </td>
+            <td>
+                <p>{{b.aircraft}}</p>
+            </td>
+        <tr ng-if="boards.length==0">
+            <td colspan="3">Здесь еще нет авиакомпаний</td>
+        </tr>
+    </table>
+</form>

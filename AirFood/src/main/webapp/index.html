@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+  <title>CAT365</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel="stylesheet" type="text/css" href="./content/css/style.css">
+  <link rel="stylesheet" type="text/css" href="./content/libs/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="./content/libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+  <link rel="stylesheet" type="text/css" href="./content/libs/angular-loading-bar/build/loading-bar.min.css">
+</head>
+<body ng-controller="RootController">
+<nav class="navbar navbar-default">
+  <div class="container ng-cloak">
+    <div class="navbar-header">
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" ui-sref="home">CAT365</a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="nav navbar-nav">
+        <li><a ng-if="user" ui-sref="dictionary">Справочники</a></li>
+        <li><a ng-if="user" ui-sref="users" ng-show="roles.indexOf('admin')!=-1">Пользователи</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a ng-if="user">{{user.lastName}} {{user.firstName}}</a></li>
+        <li><a ng-if="user" href="" ng-click="logout()">Выход</a></li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+<div class="container" ui-view=""></div>
+<footer>
+  <div class="container">
+    <hr>
+    <p class="text-center">CAT365 &copy; 2016 </p>
+  </div>
+</footer>
+<!--<div class="loader" ng-class="{'active': isLoading}"></div>-->
+<!-- Common scripts -->
+<script src="./content/libs/jquery/dist/jquery.min.js"></script>
+<script src="./content/libs/underscore/underscore-min.js"></script>
+<!--<script src="./content/libs/moment/min/moment.min.js"></script>-->
+<script src="./content/libs/moment/moment.js"></script>
+<script src="./content/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="./content/libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<!-- Angular -->
+<script src="./content/libs/angular/angular.min.js"></script>
+<script src="./content/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="./content/libs/angular-loading-bar/build/loading-bar.min.js"></script>
+<script src="./content/js/checklist-model.js"></script>
+<script src="./content/libs/angular-cookies.js"></script>
+<script src="./content/js/angular-file-model.js"></script>
+<!-- App -->
+<script src="./content/js/app.js"></script>
+<script src="./content/js/services/dictionaryService.js"></script>
+<script src="./content/js/services/ordersService.js"></script>
+<script src="./content/js/services/userService.js"></script>
+<script src="./content/js/services/roleService.js"></script>
+<script src="./content/js/services/sessionService.js"></script>
+<script src="./content/js/services/fileUploadService.js"></script>
+<script src="./content/js/factories/mainFactory.js"></script>
+<script src="./content/js/factories/rootFactory.js"></script>
+<script src="./content/js/directives/fileModel.js"></script>
+<script src="./content/js/filters/ordersFilter.js"></script>
+<script src="./content/js/filters/airlinesFilter.js"></script>
+<script src="./content/js/filters/flightsFilter.js"></script>
+<script src="./content/js/controllers/rootController.js"></script>
+<script src="./content/js/controllers/homeController.js"></script>
+<script src="./content/js/controllers/usersController.js"></script>
+<script src="./content/js/controllers/userDetailsController.js"></script>
+<script src="./content/js/controllers/loginController.js"></script>
+<script src="./content/js/controllers/dictionaryController.js"></script>
+<script src="./content/js/controllers/airportsController.js"></script>
+<script src="./content/js/controllers/airlinesController.js"></script>
+<script src="./content/js/controllers/flightsController.js"></script>
+<script src="./content/js/controllers/boardsController.js"></script>
+<script src="./content/js/controllers/ordersController.js"></script>
+<script src="./content/js/controllers/usersController.js"></script>
+<script src="./content/js/controllers/rolesController.js"></script>
+<script src="./content/js/FileSaver.js"></script>
+<script>
+  $(function(){
+    var navMain = $(".navbar-collapse");
+    console.log('in script');
+    navMain.on("click", "a", null, function () {
+      navMain.collapse('hide');
+    });
+  });</script>
+</body>
+</html>

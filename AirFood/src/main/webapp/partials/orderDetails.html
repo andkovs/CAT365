@@ -1,0 +1,608 @@
+<h3 ng-bind="title"></h3>
+<hr/>
+
+<ul id="orderTabs" class="nav nav-tabs" role="tablist" style="margin-bottom: 40px;">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Заказ</a>
+    </li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Прямой перелёт</a>
+    </li>
+    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Обратный
+        перелёт</a></li>
+    <li role="presentation" ng-class="{'disabled': order.id == 0}">
+        <a href="#files" aria-controls="files" role="tab" data-toggle="tab" ng-show="order.id != 0">Файлы</a>
+        <a ng-show="order.id == 0">Файлы</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <div role="tabpanel" class="tab-pane active" id="home">
+
+        <!-- Airport / Flight / Board -->
+        <form novalidate name="orderForm">
+            <div class="row">
+                <div class="form-group col-sm-2">
+                    <label>Аэропорт вылета</label>
+                    <select class="form-control" name="airportSelect"
+                            ng-options="item.id as item.name for item in airports"
+                            ng-model="order.depAirportId" required></select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>Аэропорт прилета</label>
+                    <select class="form-control" name="airportSelect"
+                            ng-options="item.id as item.name for item in dictionary.airports"
+                            ng-model="order.arrAirportId" required></select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>Авиакомпания</label>
+                    <select class="form-control" name="airlinetSelect"
+                            ng-options="item.id as item.name for item in airlines"
+                            ng-model="currentAirline" required></select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>№ рейса (прямой)</label>
+                    <select class="form-control"
+                            ng-options="item.id as item.number for item in dictionary.flights | airlinesFilter: currentAirline"
+                            ng-model="order.flightIdDirect" required></select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>№ рейса (обратный)</label>
+                    <select class="form-control"
+                            ng-options="item.id as item.number for item in flights | flightsFilter: currentAirline"
+                            ng-model="order.flightIdReverse"></select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>Бортовой номер</label>
+                    <select class="form-control"
+                            ng-options="item.id as item.number for item in dictionary.boards | flightsFilter: currentAirline"
+                            ng-model="order.boardId"></select>
+                </div>
+            </div>
+
+
+            <!-- Departure time / Work time -->
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label>Время прилета</label>
+                        <div id="dateTimeArrive" class="input-group">
+                            <input type="text" class="form-control" ng-model="order.arriveDateTime"/>
+                            <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar" href=""></span>
+                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label>Время вылета</label>
+                        <div id="dateTimeDeparture" class="input-group">
+                            <input type="text" class="form-control" ng-model="order.departureDateTime" required/>
+                            <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar" href=""></span>
+                </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label>Время готовности</label>
+                        <div id="dateTimeReady" class="input-group">
+                            <input type="text" class="form-control" ng-model="order.readyDateTime"/>
+                            <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar" href=""></span>
+                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label>Время досмотра</label>
+                        <div id="dateTimeInspection" class="input-group">
+                            <input type="text" class="form-control" ng-model="order.inspectionDateTime"/>
+                            <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar" href=""></span>
+                </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label>Под бортом</label>
+                        <div id="dateTimeWork" class="input-group">
+                            <input type="text" class="form-control" ng-model="order.workDateTime"/>
+                            <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar" href=""></span>
+                </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div role="tabpanel" class="tab-pane" id="profile">
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <h5>Бизнес</h5>
+                <form class="form" name="rationDirectBusinessForm"
+                      ng-repeat="b in order.rationDirectBusinessList track by $index"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationDirectBusinessForm.rationDirectBusinessCode.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectBusinessCode" ng-model="b.code"
+                                   required="required"/>
+
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationDirectBusinessForm.rationDirectBusinessAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectBusinessAmount"
+                                   ng-model="b.amount" required="required"/>
+
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(b, 1, 1)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" name="newRationDirectBusinessForm"
+                      ng-submit="addRation(newRationDirectBusiness, 1, 1, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationDirectBusinessCode"
+                                   ng-model="newRationDirectBusiness.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationDirectBusinessForm.newRationDirectBusinessCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationDirectBusinessAmount"
+                                   ng-model="newRationDirectBusiness.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationDirectBusinessForm.newRationDirectBusinessAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationDirectBusinessForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <h5>Эконом</h5>
+                <form class="form" name="rationDirectEconomForm"
+                      ng-repeat="e in order.rationDirectEconomList track by $index"
+                      ng-submit="saveRation(e, rationDirectEconomForm)" novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationDirectEconomForm.rationDirectEconomCode.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectEconomCode" ng-model="e.code"
+                                   ng-maxlength="50" required="required"/>
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationDirectEconomForm.rationDirectEconomAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectEconomAmount" ng-model="e.amount"
+                                   ng-maxlength="10" required="required"/>
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(e, 2, 1)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" name="newRationDirectEconomForm"
+                      ng-submit="addRation(newRationDirectEconom, 2, 1, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationDirectEconomCode"
+                                   ng-model="newRationDirectEconom.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationDirectEconomForm.newRationDirectEconomCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationDirectEconomAmount"
+                                   ng-model="newRationDirectEconom.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationDirectEconomForm.newRationDirectEconomAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationDirectEconomForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <h5>Экипаж</h5>
+                <form class="form" name="rationDirectCrewForm"
+                      ng-repeat="c in order.rationDirectCrewList track by $index"
+                      ng-submit="saveRation(c, rationDirectCrewForm)" novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationDirectCrewForm.rationDirectCrewCode.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectCrewCode" ng-model="c.code"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationDirectCrewForm.rationDirectCrewAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectCrewAmount" ng-model="c.amount"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(c, 3, 1)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" id="3" name="newRationDirectCrewForm"
+                      ng-submit="addRation(newRationDirectCrew, 3, 1, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationDirectCrewCode"
+                                   ng-model="newRationDirectCrew.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationDirectCrewForm.newRationDirectCrewCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationDirectCrewAmount"
+                                   ng-model="newRationDirectCrew.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationDirectCrewForm.newRationDirectCrewAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationDirectCrewForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <h5>Специальное</h5>
+                <form class="form" name="rationDirectSpecialForm"
+                      ng-repeat="s in order.rationDirectSpecialList track by $index"
+                      ng-submit="saveRation(s, rationDirectSpecialForm)" novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationDirectSpecialForm.rationDirectSpecialCode.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectSpecialCode" ng-model="s.code"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationDirectSpecialForm.rationDirectSpecialAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationDirectSpecialAmount" ng-model="s.amount"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(s, 4, 1)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" name="newRationDirectSpecialForm"
+                      ng-submit="addRation(newRationDirectSpecial, 4, 1, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationDirectSpecialCode"
+                                   ng-model="newRationDirectSpecial.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationDirectSpecialForm.newRationDirectSpecialCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationDirectSpecialAmount"
+                                   ng-model="newRationDirectSpecial.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationDirectSpecialForm.newRationDirectSpecialAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationDirectSpecialForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <form class="form" name="directDrinkCommentForm">
+            <div class="row">
+                <div class="form-group col-md-3">
+                    <label>Напитки по матрице</label>
+                    <input name="directDrink" class="form-control" ng-maxlength="50" type="text"
+                           ng-model="order.drinkDirect.drink"/>
+                    <span ng-show="directDrinkCommentForm.directDrink.$error.maxlength"
+                          class="text-warning">Не более 50 символов</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Комментарий</label>
+                <textarea name="directComment" class="form-control" ng-maxlength="5000" cols="5"
+                          ng-model="order.directComment"></textarea>
+                <span ng-show="directDrinkCommentForm.directComment.$error.maxlength"
+                      class="text-warning">Не более 5000 символов</span>
+            </div>
+        </form>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="messages">
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <h5>Бизнес</h5>
+                <form class="form" name="rationReverseBusinessForm"
+                      ng-repeat="b in order.rationReverseBusinessList track by $index"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationReverseBusinessForm.rationReverseBusinessCode.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseBusinessCode" ng-model="b.code"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationReverseBusinessForm.rationReverseBusinessAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseBusinessAmount"
+                                   ng-model="b.amount"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(b, 1, 2)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" name="newRationReverseBusinessForm"
+                      ng-submit="addRation(newRationReverseBusiness, 1, 2, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationReverseBusinessCode"
+                                   ng-model="newRationReverseBusiness.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationReverseBusinessForm.newRationReverseBusinessCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationReverseBusinessAmount"
+                                   ng-model="newRationReverseBusiness.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationReverseBusinessForm.newRationReverseBusinessAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationReverseBusinessForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <h5>Эконом</h5>
+                <form class="form" name="rationReverseEconomForm"
+                      ng-repeat="e in order.rationReverseEconomList track by $index"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationReverseEconomForm.rationReverseEconomCode.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseEconomCode" ng-model="e.code"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationReverseEconomForm.rationReverseEconomAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseEconomAmount" ng-model="e.amount"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(e, 2, 2)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" name="newRationReverseEconomForm"
+                      ng-submit="addRation(newRationReverseEconom, 2, 2, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationReverseEconomCode"
+                                   ng-model="newRationReverseEconom.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationReverseEconomForm.newRationReverseEconomCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationReverseEconomAmount"
+                                   ng-model="newRationReverseEconom.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationReverseEconomForm.newRationReverseEconomAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationReverseEconomForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <h5>Экипаж</h5>
+                <form class="form" name="rationReverseCrewForm"
+                      ng-repeat="c in order.rationReverseCrewList track by $index"
+                      ng-submit="saveRation(c, rationReverseCrewForm)" novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationReverseCrewForm.rationReverseCrewCode.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseCrewCode" ng-model="c.code"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationReverseCrewForm.rationReverseCrewAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseCrewAmount" ng-model="c.amount"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(c, 3, 2)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" name="newRationReverseCrewForm"
+                      ng-submit="addRation(newRationReverseCrew, 3, 2, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationReverseCrewCode"
+                                   ng-model="newRationReverseCrew.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationReverseCrewForm.newRationReverseCrewCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationReverseCrewAmount"
+                                   ng-model="newRationReverseCrew.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationReverseCrewForm.newRationReverseCrewAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationReverseCrewForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <h5>Специальное</h5>
+                <form class="form" name="rationReverseSpecialForm"
+                      ng-repeat="s in order.rationReverseSpecialList track by $index"
+                      ng-submit="saveRation(s, rationReverseSpecialForm)" novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5"
+                             ng-class="{'has-error': rationReverseSpecialForm.rationReverseSpecialCode.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseSpecialCode" ng-model="s.code"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-md-3"
+                             ng-class="{'has-error': rationReverseSpecialForm.rationReverseSpecialAmount.$invalid}">
+                            <input class="form-control" type="text" name="rationReverseSpecialAmount"
+                                   ng-model="s.amount"
+                                   required="required"/>
+                        </div>
+                        <div class="form-group col-xs-4">
+                            <button class="btn btn-warning" type="button"
+                                    ng-click="removeRation(s, 4, 2)"><i class="glyphicon glyphicon-trash"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <form class="" name="newRationReverseSpecialForm"
+                      ng-submit="addRation(newRationReverseSpecial, 4, 2, order.id)"
+                      novalidate="novalidate">
+                    <div class="row">
+                        <div class="form-group col-md-5">
+                            <input class="form-control" type="text" name="newRationReverseSpecialCode"
+                                   ng-model="newRationReverseSpecial.code" ng-maxlength="50" required="required"/>
+                            <span ng-show="newRationReverseSpecialForm.newRationReverseSpecialCode.$error.maxlength"
+                                  class="text-warning">Не более 50 символов</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input class="form-control" type="text" name="newRationReverseSpecialAmount"
+                                   ng-model="newRationReverseSpecial.amount" ng-maxlength="10" required="required"/>
+                            <span ng-show="newRationReverseSpecialForm.newRationReverseSpecialAmount.$error.maxlength"
+                                  class="text-warning">Не более 10 символов</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-success" type="submit"
+                                    ng-disabled="newRationReverseSpecialForm.$invalid">
+                                <i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <form class="form" name="reverseDrinkCommentForm">
+            <div class="row">
+                <div class="form-group col-md-3">
+                    <label>Напитки по матрице</label>
+                    <input name="reverseDrink" class="form-control" ng-maxlength="50" type="text"
+                           ng-model="order.drinkReverse.drink"/>
+                    <span ng-show="reverseDrinkCommentForm.reverseDrink.$error.maxlength"
+                          class="text-warning">Не более 50 символов</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Комментарий</label>
+                <textarea name="reverseComment" class="form-control" ng-maxlength="5000" cols="5"
+                          ng-model="order.reverseComment"></textarea>
+                <span ng-show="reverseDrinkCommentForm.reverseComment.$error.maxlength"
+                      class="text-warning">Не более 5000 символов</span>
+            </div>
+        </form>
+
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="files">
+
+        <table class="table table-hover">
+            <tr>
+                <th>Файл</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="f in order.files">
+                <td><a href="" ng-click="getFile(f)">{{f.name}}</a></td>
+                <td class="text-right"><a href="" class="text-danger glyphicon glyphicon-remove"
+                                          ng-click="removeFile(f)"></a></td>
+            </tr>
+        </table>
+
+        <p>
+            <input type="file" id="fileUpl" name="file" file-model="myFile"/>
+        </p>
+        <p>
+            <button class="btn btn-success" ng-click="uploadFile()">Загрузить</button>
+        </p>
+
+    </div>
+
+</div>
+
+<hr/>
+
+<div class="form-group">
+    <!-- <button type="submit" ng-disabled="orderForm.airportSelect.$error.required" ng-click="addNewOrder(order)" class="btn btn-primary">Сохранить</button> -->
+    <button type="submit" ng-disabled="orderForm.$invalid||reverseDrinkCommentForm.$invalid||directDrinkCommentForm.$invalid"
+            ng-click="addNewOrder(order)" class="btn btn-primary">
+        Сохранить
+    </button>
+    <button type="button" ng-click="reset()" class="btn btn-default">Сбросить</button>
+    <a ui-sref="orders" class="btn btn-default">Назад</a>
+</div>
+
+
+

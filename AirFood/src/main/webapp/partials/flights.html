@@ -1,0 +1,75 @@
+<h3 ng-bind="title"></h3>
+<hr/>
+
+
+<div class="row">
+    <div class="form-group col-md-4">
+        <select class="form-control" name="airlineSelect"
+                ng-options="item.id as item.name for item in airlines" ng-model="currentAirline"></select>
+    </div>
+</div>
+<hr/>
+
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" name="flightForm"
+      ng-repeat="f in flights | airlinesFilter: currentAirline" ng-submit="saveFlight(f, flightForm)" novalidate>
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label>Номер рейса</label>
+            <input ng-maxlength="50" class="form-control" type="text" name="flightNumber" ng-model="f.number" required/>
+            <span ng-show="flightForm.flightNumber.$error.maxlength" class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>Авиакомпания</label>
+            <select class="form-control" name="flightAirline"
+                    ng-options="item.id as item.name for item in dictionary.airlines" ng-model="f.airlineId"></select>
+        </div>
+        <div class="form-group col-xs-4">
+            <label style="display:block;">&nbsp;</label>
+            <button ng-disabled="flightForm.$invalid" class="btn btn-success" type="submit" ng-show="flightForm.$dirty">
+                <i class="glyphicon glyphicon-ok"></i></button>
+            <button class="btn btn-danger" type="button" ng-show="flightForm.$dirty"
+                    ng-click="resetFlight(f, flightForm)"><i class="glyphicon glyphicon-remove"></i></button>
+            <button class="btn btn-warning" type="button" ng-show="!flightForm.$dirty" ng-click="removeFlight(f)"><i
+                    class="glyphicon glyphicon-trash"></i></button>
+        </div>
+    </div>
+    <hr/>
+</form>
+
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" name="newFlightForm"
+      ng-submit="addFlight(newFlight)" novalidate>
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label>Номер рейса</label>
+            <input ng-maxlength="50" class="form-control" type="text" name="newflightNumber" ng-model="newFlight.number"
+                   required/>
+            <span ng-show="newFlightForm.newflightNumber.$error.maxlength"
+                  class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>Авиакомпания</label>
+            <select class="form-control" ng-options="item.id as item.name for item in dictionary.airlines"
+                    ng-model="newFlight.airlineId" required></select>
+        </div>
+        <div class="form-group col-xs-4">
+            <label style="display:block;">&nbsp;</label>
+            <button class="btn btn-success" type="submit" ng-disabled="newFlightForm.$invalid"><i
+                    class="glyphicon glyphicon-plus"></i></button>
+        </div>
+    </div>
+</form>
+
+<form ng-show="roles.indexOf('agent')!=-1 || roles.indexOf('review')!=-1 || roles.indexOf('management')!=-1">
+    <table class="table table-hover table-striped">
+        <tr>
+            <th>Номер рейса</th>
+        </tr>
+        <tr ng-repeat="f in flights | airlinesFilter: currentAirline">
+            <td>
+                <p>{{f.number}}</p>
+            </td>
+        <tr ng-if="flights.length==0">
+            <td colspan="3">Здесь еще нет рейсов</td>
+        </tr>
+    </table>
+</form>

@@ -1,0 +1,124 @@
+<h3 ng-bind="title"></h3>
+<hr/>
+
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" novalidate name="airlineForm"
+      ng-repeat="a in airlines" ng-submit="saveAirline(a, airlineForm)">
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label>Наименование</label>
+            <input required ng-maxlength="50" class="form-control" type="text" name="airlineName" ng-model="a.name"/>
+            <span ng-show="airlineForm.airlineName.$error.maxlength" class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>Полное имяе</label>
+            <input ng-maxlength="150" class="form-control" type="text" name="airlineFullName" ng-model="a.fullname"
+                   required/>
+            <span ng-show="airlineForm.airlineFullName.$error.maxlength"
+                  class="text-warning">Не более 150 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>ИАТА</label>
+            <input ng-maxlength="5" class="form-control" type="text" name="airlineIata" ng-model="a.iata" required/>
+            <span ng-show="airlineForm.airlineIata.$error.maxlength" class="text-warning">Не более 5 символов</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label>Телефон</label>
+            <input ng-maxlength="20" class="form-control" type="text" name="airlinePhone" ng-model="a.phone"/>
+            <span ng-show="airlineForm.airlinePhone.$error.maxlength" class="text-warning">Не более 20 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>E-mail</label>
+            <input ng-maxlength="50" class="form-control" type="text" name="airlineEmail" ng-model="a.email"/>
+            <span ng-show="airlineForm.airlineEmail.$error.maxlength" class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label style="display:block;">&nbsp;</label>
+            <button ng-disabled="airlineForm.$invalid" class="btn btn-success" type="submit"
+                    ng-show="airlineForm.$dirty" ng-disabled="airlineForm.$invalid"><i
+                    class="glyphicon glyphicon-ok"></i></button>
+            <button class="btn btn-danger" type="button" ng-show="airlineForm.$dirty"
+                    ng-click="resetAirline(a, airlineForm)"><i class="glyphicon glyphicon-remove"></i></button>
+            <button class="btn btn-warning" type="button" ng-show="!airlineForm.$dirty" ng-click="removeAirline(a)"><i
+                    class="glyphicon glyphicon-trash"></i></button>
+        </div>
+    </div>
+    <hr/>
+</form>
+
+<form ng-show="roles.indexOf('admin')!=-1 || roles.indexOf('dispatcher')!=-1" name="newAirlineForm"
+      ng-submit="addAirline(newAirline)" novalidate>
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label>Наименование</label>
+            <input ng-maxlength="50" class="form-control" type="text" name="newAirlineName" ng-model="newAirline.name"
+                   required/>
+            <span ng-show="newAirlineForm.newAirlineName.$error.maxlength"
+                  class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>Полное имя</label>
+            <input ng-maxlength="150" class="form-control" type="text" name="newAirlineFullName"
+                   ng-model="newAirline.fullname" required/>
+            <span ng-show="newAirlineForm.newAirlineFullName.$error.maxlength" class="text-warning">Не более 150 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>ИАТА</label>
+            <input ng-maxlength="5" class="form-control" type="text" name="airlineIata" ng-model="newAirline.iata"
+                   required/>
+            <span ng-show="newAirlineForm.airlineIata.$error.maxlength" class="text-warning">Не более 5 символов</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label>Телефон</label>
+            <input ng-maxlength="20" class="form-control" type="text" name="airlinePhone" ng-model="newAirline.phone"/>
+            <span ng-show="newAirlineForm.airlinePhone.$error.maxlength"
+                  class="text-warning">Не более 20 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label>E-mail</label>
+            <input ng-maxlength="50" class="form-control" type="text" name="airlineEmail" ng-model="newAirline.email"/>
+            <span ng-show="newAirlineForm.airlineEmail.$error.maxlength"
+                  class="text-warning">Не более 50 символов</span>
+        </div>
+        <div class="form-group col-xs-4">
+            <label style="display:block;">&nbsp;</label>
+            <button class="btn btn-success" type="submit" ng-disabled="newAirlineForm.$invalid"><i
+                    class="glyphicon glyphicon-plus"></i></button>
+        </div>
+    </div>
+</form>
+
+<form ng-show="roles.indexOf('agent')!=-1 || roles.indexOf('review')!=-1 || roles.indexOf('management')!=-1">
+    <table class="table table-hover table-striped">
+        <tr>
+            <th>Наименование</th>
+            <th>Полное имя</th>
+            <th>ИАТА</th>
+            <th>Телефон</th>
+            <th>E-mail</th>
+        </tr>
+        <tr ng-repeat="a in airlines">
+            <td>
+                <p>{{a.name}}</p>
+            </td>
+            <td>
+                <p>{{a.fullname}}</p>
+            </td>
+            <td>
+                <p>{{a.iata}}</p>
+            </td>
+            <td>
+                <p>{{a.phone}}</p>
+            </td>
+            <td>
+                <p>{{a.email}}</p>
+            </td>
+
+        <tr ng-if="airlines.length==0">
+            <td colspan="3">Здесь еще нет авиакомпаний</td>
+        </tr>
+    </table>
+</form>

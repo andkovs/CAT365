@@ -1,0 +1,11 @@
+<h1 class="text-center">{{title}}</h1>
+<hr/>
+<div class="row">
+    <div class="col-lg-3 col-md-4">
+        <div class="list-group">
+            <a class="list-group-item" ui-sref="accounts.users" ng-class="{active: $state.includes('accounts.users')}">Пользователи<span class="badge" ng-bind="accounts.users.length"></span></a>
+            <a class="list-group-item" ui-sref="accounts.roles" ng-class="{active: $state.includes('accounts.roles')}">Роли<span class="badge" ng-bind="accounts.roles.length"></span></a>
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-8" ui-view=""></div>
+</div>

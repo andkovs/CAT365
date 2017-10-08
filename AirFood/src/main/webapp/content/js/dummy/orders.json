@@ -1,0 +1,23 @@
+{
+	"from": "2016-02-11 12:00",
+	"to": "2016-02-13 12:00",
+	"orders": [{
+		"id": "123",
+		"airportId": "1",
+		"airportName": "SVO",
+		"departureDateTime": "24-10-2016 13:04",
+		"workDateTime": "24-10-2016 06:04",
+		"aircraftType": "A330",
+		"flightNumber": "S12",
+		"boardNumber": "555-444"
+	},{
+		"id": "22",
+		"airportId": "2",
+		"airportName": "LED",
+		"departureDateTime": "23-10-2016 15:28",
+		"workDateTime": "23-10-2016 13:20",
+		"aircraftType": "A320",
+		"flightNumber": "L33",
+		"boardNumber": "123-768"
+	}]
+}

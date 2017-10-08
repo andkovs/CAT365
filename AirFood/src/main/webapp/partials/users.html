@@ -1,0 +1,196 @@
+<h3 ng-bind="title"></h3>
+<hr/>
+
+<div class="row">
+    <!-- Course title Search -->
+    <div class="form-group col-xs-2">
+        <lable>Поиск</lable>
+        <div class="input-group">
+            <input type="text" class="form-control" ng-model="search">
+            <span class="input-group-addon glyphicon glyphicon-search"></span>
+        </div>
+    </div>
+</div>
+
+<p class="clearfix">
+    <a class="btn btn-info pull-left" ui-sref="userDetails({ id: 0})">Новый пользователь <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+</p>
+<table class="table table-hover table-striped">
+    <tr>
+        <td style="width: 3%"></td>
+        <th>Логин</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>E-mail</th>
+        <!--<td style="width: 3%"></td>-->
+        <td style="width: 3%"></td>
+        <td style="width: 3%"></td>
+    </tr>
+    <tr ng-repeat="u in users | filter: search">
+        <td>
+            <button ng-show="u.enabled" ng-click="disableUser(u)" type="button" class="btn-xs btn-success">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+            </button>
+            <button ng-show="!u.enabled" ng-click="enableUser(u)" type="button" class="btn-xs btn-danger">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+            </button>
+        </td>
+        <td>
+            <p>{{u.login}}</p>
+        </td>
+        <td>
+            <p>{{u.firstName}}</p>
+        </td>
+        <td>
+            <p>{{u.lastName}}</p>
+        </td>
+        <td>
+            <p>{{u.email}}</p>
+        </td>
+        <!--<td>-->
+        <!--<a href="" ng-click="preview(u.id)" class="text-info glyphicon glyphicon-eye-open"></a>-->
+        <!--</td>-->
+        <td>
+            <a ui-sref="userDetails({id: {{u.id}}})" class="glyphicon glyphicon-edit"></a>
+        </td>
+        <td>
+            <a href="" ng-click="removeUser(u)" class="text-danger glyphicon glyphicon-trash"></a>
+        </td>
+    </tr>
+    <tr ng-if="!users">
+        <td colspan="3">No users here yet</td>
+    </tr>
+</table>
+
+<!--<div id="userPreview" class="modal fade" tabindex="-1" role="dialog">-->
+<!--<div class="modal-dialog modal-lg" role="document">-->
+<!--<div class="modal-content">-->
+
+<!--&lt;!&ndash; Header &ndash;&gt;-->
+<!--<div class="modal-header">-->
+<!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+<!--<h2 class="modal-title">{{previewData.login}}</h2>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Body &ndash;&gt;-->
+<!--<div class="modal-body">-->
+<!--<div class="row">-->
+<!--<div class="col-xs-2 text-right"><p><b>Логин</b></p></div>-->
+<!--<div class="col-xs-4"><p>{{previewData.login}}</p></div>-->
+<!--<div class="col-xs-2 text-right"><p><b>Имя</b></p></div>-->
+<!--<div class="col-xs-4"><p>{{previewData.firstName}}</p></div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="col-xs-2 text-right"><p><b>Пароль</b></p></div>-->
+<!--<div class="col-xs-4"><p>{{previewData.password}}</p></div>-->
+<!--<div class="col-xs-2 text-right"><p><b>Фамилия</b></p></div>-->
+<!--<div class="col-xs-4"><p>{{previewData.lastName}}</p></div>-->
+<!--</div>-->
+<!--<hr/>-->
+<!--<div class="row">-->
+<!--<div class="col-xs-2 text-right"><p><b>Телефон</b></p></div>-->
+<!--<div class="col-xs-4"><p>{{previewData.phone}}</p></div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="col-xs-2 text-right"><p><b>E-mail</b></p></div>-->
+<!--<div class="col-xs-4"><p>{{previewData.email}}</p></div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
+<!--<h3 ng-bind="title"></h3>-->
+<!--<hr />-->
+
+<!--<form novalidate name="userForm" ng-repeat="u in users" ng-submit="saveUser(u, userForm)" >-->
+    <!--<div class="row">-->
+        <!--<div class="form-group col-md-3">-->
+            <!--<label>Логин</label>-->
+            <!--<input required ng-maxlength="40" class="form-control" ng-disabled="role.indexOf('management')!=-1" type="text" name="login" ng-model="u.login"/>-->
+            <!--<span ng-show="userForm.login.$error.maxlength" class="text-warning">Не более 40 символов</span>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-3">-->
+            <!--<label>Пароль</label>-->
+            <!--<input required ng-maxlength="40" class="form-control" ng-disabled="role.indexOf('management')!=-1" type="text" name="password" ng-model="u.password"/>-->
+            <!--<span ng-show="userForm.password.$error.maxlength" class="text-warning">Не более 40 символов</span>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+        <!--<div class="form-group col-md-3" ng-class="{'has-error': userForm.firstName.$invalid}">-->
+            <!--<label>Имя</label>-->
+            <!--<input class="form-control" ng-disabled="role.indexOf('management')!=-1" type="text" name="firstName" ng-model="u.firstName" required/>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-3" ng-class="{'has-error': userForm.lastName.$invalid}">-->
+            <!--<label>Фамилия</label>-->
+            <!--<input class="form-control" ng-disabled="role.indexOf('management')!=-1" type="text" name="lastName" ng-model="u.lastName" required=/>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-3" ng-class="{'has-error': userForm.email.$invalid}">-->
+            <!--<label>E-mail</label>-->
+            <!--<input class="form-control" ng-disabled="role.indexOf('management')!=-1" type="text" name="email" ng-model="u.email" required/>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div>-->
+        <!--<label>Роли</label>-->
+    <!--</div>-->
+    <!--<div class="row col-md-6">-->
+        <!--<div  class="form-group"  ng-class="{'has-error': userForm.role.$invalid}"-->
+             <!--class="checkbox" name="roles" ng-repeat="r in roles">-->
+            <!--<label>-->
+                <!--<input ng-disabled="role.indexOf('management')!=-1" type="checkbox" checklist-model="u.roles" checklist-value="r"> {{r}}-->
+            <!--</label>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+        <!--<div class="form-group col-md-3"  >-->
+            <!--<button class="btn btn-success" type="submit" ng-show="(role.indexOf('admin')!=-1 || role.indexOf('dispatcher')!=-1)&&(userForm.roles.$dirty||userForm.login.$dirty||userForm.password.$dirty||userForm.role.$dirty||userForm.firstName.$dirty||userForm.lastName.$dirty||userForm.email.$dirty)" ng-disabled="userForm.login.$error.required"><i class="glyphicon glyphicon-ok"></i></button>-->
+            <!--<button class="btn btn-danger" type="button" ng-show="(role.indexOf('admin')!=-1 || role.indexOf('dispatcher')!=-1)&&(userForm.roles.$dirty||userForm.login.$dirty||userForm.password.$dirty||userForm.role.$dirty||userForm.firstName.$dirty||userForm.lastName.$dirty||userForm.email.$dirty)" ng-click="resetUser(u, userForm)"><i class="glyphicon glyphicon-remove"></i></button>-->
+            <!--<button class="btn btn-warning" type="button" ng-show="(role.indexOf('admin')!=-1 || role.indexOf('dispatcher')!=-1)&&(!userForm.roles.$dirty||userForm.login.$dirty||userForm.password.$dirty||userForm.role.$dirty||userForm.firstName.$dirty||userForm.lastName.$dirty||userForm.email.$dirty)" ng-click="removeUser(u)"><i class="glyphicon glyphicon-trash"></i></button>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--<hr/>-->
+<!--</form>-->
+<!--<hr />-->
+
+
+<!--<form class="" ng-show="role.indexOf('admin')!=-1" name="newUserForm" ng-submit="addUser(newUser)" novalidate="novalidate">-->
+    <!--<div class="row">-->
+        <!--<div class="form-group col-md-3">-->
+            <!--<label>Логин</label>-->
+            <!--<input class="form-control" type="text" name="newLogin" ng-model="newUser.login" required="required"/>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-3">-->
+            <!--<label>Пароль</label>-->
+            <!--<input class="form-control" type="text" name="newPassword" ng-model="newUser.password" required="required"/>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+        <!--<div class="form-group col-md-3">-->
+            <!--<label>Имя</label>-->
+            <!--<input class="form-control" type="text" name="newFirstName" ng-model="newUser.firstName" required="required"/>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-3">-->
+            <!--<label>Фамилия</label>-->
+            <!--<input class="form-control" type="text" name="newLastName" ng-model="newUser.lastName" required="required"/>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-3">-->
+            <!--<label>E-mail</label>-->
+            <!--<input class="form-control" type="text" name="newEmail" ng-model="newUser.email" required="required"/>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-3"  >-->
+            <!--<label style="display:block;">&nbsp;</label>-->
+            <!--<button class="btn btn-success" type="submit" ng-disabled="newUserForm.newLogin.$error.required"><i class="glyphicon glyphicon-plus"></i></button>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="row">-->
+        <!--<div>-->
+            <!--<label>Роли</label>-->
+        <!--</div>-->
+        <!--<div class="form-group col-md-6"  ng-class="{'has-error': userForm.roles.$invalid}">-->
+            <!--<label class="checkbox" ng-repeat="role in roles">-->
+                <!--<input type="checkbox" name="roles" checklist-model="newUser.roles" checklist-value="role"> {{role}}-->
+            <!--</label>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</form>-->

@@ -1,0 +1,44 @@
+<form ng-if="user">
+    <div ng-cloak class="row" ng-if="user" ng-cloak>
+        <a href="" class="col-sm-3 col-md-2 col-xs-3" ng-click="getOrders()">
+            <div class="thumbnail">
+                <img src="./content/img/orders.png" alt="Суточный план" />
+                <div class="caption">
+                    <p>Суточный план</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</form>
+<form name="loginForm" ng-if="!user">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-2 col-xs-offset-5">
+                <img src="./content/img/logo.png" style="display: block; width: 100%; height: auto; margin: 40px auto;"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-4">
+
+                <div class="form-group">
+                    <label>Логин</label>
+                    <input required ng-maxlength="20" class="form-control" name="login" type="text" ng-model="login.login"/>
+                    <span ng-show="loginForm.login.$error.maxlength"
+                          class="text-warning">Не более 20 символов</span>
+
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input required ng-maxlength="20" class="form-control" name="password" type="password" ng-model="login.password"/>
+                    <span ng-show="loginForm.password.$error.maxlength"
+                          class="text-warning">Не более 20 символов</span>
+                </div>
+                <span ng-show="invalidLoginOrPass"
+                      class="text-warning">{{invalidText}}</span>
+                <div class="form-group">
+                    <button ng-disabled="loginForm.$invalid" class="btn btn-primary" ng-click="authorization()">Вход</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
